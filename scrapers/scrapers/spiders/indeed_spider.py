@@ -1,5 +1,7 @@
 import scrapy
 
+from scrapy.exceptions import CloseSpider
+
 # NOTE: This script is written in 01/08/2022.
 # I am not sure if it will work in the future.
 
@@ -8,15 +10,23 @@ class IndeedSpider(scrapy.Spider):
     base_url = 'https://vn.indeed.com'
     job_page_url = 'https://www.indeed.com/viewjob?jk='
 
-    def start_requests(self):
-        # The start URL is tested with parameters:
-        # q = Data Intern
-        # l = Ho Chi Minh City
+    def __init__(self, search_query='Data Intern', location='Ho Chi Minh', max_pages=2):
+        self.search_query = search_query
+        self.location = location
+        self.max_pages = max_pages
+        self.count = 0
 
-        start_urls = ["https://vn.indeed.com/m/jobs?q=data+intern&l=Ho+Chi+Minh+City"]
-        yield scrapy.Request(start_urls[0], callback=self.parse)
+        self.start_urls = [self.base_url + '/jobs?q=' + self.search_query + '&l=' + self.location]
+
+
+    def start_requests(self):
+        yield scrapy.Request(self.start_urls[0], callback=self.parse)
 
     def parse(self, response):
+        # comment the next 2 lines to scrape all the page of the search result
+        if self.count >= self.max_pages:
+            raise CloseSpider('Reached max pages')
+
         for job in response.css('div.job_seen_beacon'):
             job_id = job.css('h2.jobTitle > a::attr(data-jk)').extract_first()
             location = job.css('div.companyLocation ::text').extract_first()
@@ -28,8 +38,9 @@ class IndeedSpider(scrapy.Spider):
 
         # get the next page url
         next_page = response.xpath('//a[@aria-label="Next"]/@href').extract_first()
-        if next_page is not None:
+        if next_page is not None and self.count < self.max_pages:
             next_page = response.urljoin(next_page)
+            self.count += 1
             yield scrapy.Request(next_page, callback=self.parse)
 
 
