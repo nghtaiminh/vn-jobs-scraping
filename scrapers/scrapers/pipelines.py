@@ -8,14 +8,17 @@
 from itemadapter import ItemAdapter
 from scrapy.exporters import JsonItemExporter
 
+
 class ScrapersPipeline:
     def open_spider(self, spider):
-        if spider.name == 'indeed_spider':
-            self.file = open('scrapers/scrapers/data/indeed_jobs.json', 'wb')
-        elif spider.name == 'jobstreet_spider':
-            self.file = open('scrapers/scrapers/data/jobstreet_jobs.json', 'wb')
+        if spider.name == "indeed_spider":
+            self.file = open("scrapers/scrapers/data/indeed_jobs.json", "wb")
+        elif spider.name == "jobstreet_spider":
+            self.file = open("scrapers/scrapers/data/jobstreet_jobs.json", "wb")
 
-        self.exporter = JsonItemExporter(self.file, encoding='utf-8', ensure_ascii=False)
+        self.exporter = JsonItemExporter(
+            self.file, encoding="utf-8", ensure_ascii=False
+        )
         self.exporter.start_exporting()
 
     def close_spider(self, spider):
