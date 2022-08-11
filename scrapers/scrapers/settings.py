@@ -7,6 +7,8 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
+from fake_useragent import UserAgent
+
 BOT_NAME = 'scrapers'
 
 SPIDER_MODULES = ['scrapers.scrapers.spiders']
@@ -14,7 +16,7 @@ NEWSPIDER_MODULE = 'scrapers.scrapers.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'scrapers (+http://www.yourdomain.com)'
+USER_AGENT = UserAgent().random
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
@@ -31,7 +33,7 @@ ROBOTSTXT_OBEY = False
 #CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable cookies (enabled by default)
-#COOKIES_ENABLED = False
+COOKIES_ENABLED = False
 
 # Disable Telnet Console (enabled by default)
 #TELNETCONSOLE_ENABLED = False
