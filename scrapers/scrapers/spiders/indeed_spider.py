@@ -54,7 +54,7 @@ class IndeedSpider(scrapy.Spider):
 
     def parse_job_details(self, response):
 
-        # the url is brought from the previous reponse
+        # the data is brought from the previous reponse
         job_id = response.meta["job_id"]
         link = response.meta["link"]
         location = response.meta["location"]
