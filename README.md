@@ -1,6 +1,6 @@
 # vn-job-scraping
 
-Link to the demo: [here](https://nghtaiminh-vn-jobs-scraping-app-xduvz2.s)
+Link to the demo: [here](https://nghtaiminh-vn-jobs-scraping-app-xduvz2.streamlitapp.com/)
 
 ### Install
 
