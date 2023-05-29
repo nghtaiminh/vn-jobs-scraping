@@ -18,6 +18,9 @@ NEWSPIDER_MODULE = 'scrapers.scrapers.spiders'
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 USER_AGENT = UserAgent().random
 
+
+
+
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
 
