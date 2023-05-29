@@ -1,5 +1,6 @@
 import os, sys
 import json
+import time
 from retry import retry
 import streamlit as st
 
@@ -20,20 +21,37 @@ def open_json_with_retry(filepath):
 # App
 st.title("💼 Job Scraping Demo")
 
-st.markdown(
-    "⚠️ Note: The project is not for commercial use."
-)
+st.write("⚠️ **Note**: The project is not for commercial use.")
+st.write("*Updated*: Indeed spider is not working due to new Cloudfare protection.")
 
 
 website_option = st.selectbox(
     "Select a website to scrape",
-    ["Indeed", "Jobstreet  (Comming Soon)", "Glassdoor (Coming Soon)"],
+    ["Indeed", "Jobstreet", "Glassdoor (Coming Soon)"],
 )
 
 option_left, option_right = st.columns(2)
 
 if website_option == "Indeed":
     output_file_path = os.path.join(DATA_FOLDER_PATH, "indeed_jobs.json")
+
+    search_query = option_left.text_input(
+        "Which job title you want to search for?", placeholder="e.g. Data Scientist"
+    )
+
+    location = option_left.selectbox(
+        "Which location you want to search for?",
+        ["Ho Chi Minh", "Da Nang", "Hanoi"],
+        index=0,
+    )
+
+    max_pages = option_left.selectbox(
+        "How many pages of the search result you want to scrape? (The result also depends on the available jobs)",
+        [1, 2, 5, 10],
+        index=0,
+    )
+elif website_option == "Jobstreet":
+    output_file_path = os.path.join(DATA_FOLDER_PATH, "jobstreet_jobs.json")
 
     search_query = option_left.text_input(
         "Which job title you want to search for?", placeholder="e.g. Data Scientist"
@@ -60,6 +78,10 @@ if website_option == "Indeed":
     output_data = os.path.join(DATA_FOLDER_PATH, "indeed_jobs.json")
     if os.path.isfile(output_data):
         os.remove(output_data)
+elif website_option == "Jobstreet":
+    output_data = os.path.join(DATA_FOLDER_PATH, "jobstreet_jobs.json")
+    if os.path.isfile(output_data):
+        os.remove(output_data)
 
 
 #################################
@@ -75,7 +97,10 @@ if scrape_btn:
                 search_query=search_query, location=location, max_pages=max_pages
             )
         elif website_option == "Jobstreet":
-            st.write("Scraping Jobstreet")
+            scraper = Scapers()
+            scraper.run_jobstreetvn_spider(
+                search_query=search_query, location=location, max_pages=max_pages
+            )
         elif website_option == "Glassdoor (Coming Soon)":
             st.write("Scraping Glassdoor")
         else:
@@ -101,6 +126,7 @@ if scrape_btn:
 
         st.download_button(
             label="Download JSON",
+            # job data + date + scraper
             file_name="job_data.json",
             mime="application/json",
             data=json_string,
