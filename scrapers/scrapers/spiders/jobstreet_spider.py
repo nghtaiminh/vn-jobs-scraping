@@ -9,10 +9,7 @@ from scrapy.exceptions import CloseSpider
 class JobStreetSpider(scrapy.Spider):
     name = "jobstreet_spider"
     base_url = "https://www.jobstreet.vn"
-    job_page_url = (
-        "https://www.jobstreet.vn/job/"  
-    )
-
+    job_page_url = "https://www.jobstreet.vn/job/"
 
     def __init__(self, search_query="Data Intern", location="Ho Chi Minh", max_pages=2):
         self.search_query = urllib.parse.quote(search_query)
@@ -65,18 +62,14 @@ class JobStreetSpider(scrapy.Spider):
         link = response.meta["link"]
 
         # scrape information from the job page
-        # get comapany span element with company class name
         company_name = response.css("span.company::text").extract_first()
-        # get job description from div with job-description-container id
-        job_description = response.css("div#job-description-container ::text").getall()
-        print
-        # get job location from span with location class name
+        job_description = response.css(
+            "div#job-description-container"
+        ).getall()  # keep raw html tags to process later
         job_location = response.css("span.location::text").extract_first()
-        # get listed date from span with listed_date class name
         listed_date = response.css("span.listed-date::text").extract_first()
-        # get apply link from a with apply-button class name
         apply_link = response.css("a.apply-button::attr(href)").extract_first()
-        # yield the data
+
         yield {
             "job_id": job_id,
             "job_title": job_title,
@@ -84,7 +77,7 @@ class JobStreetSpider(scrapy.Spider):
             "job_description": job_description,
             "job_location": job_location,
             "listed_date": listed_date,
-            "apply_link": self.base_url +  apply_link,
+            "apply_link": self.base_url + apply_link,
             "job_link": link,
             "scraped_date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         }
