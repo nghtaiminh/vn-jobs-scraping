@@ -18,7 +18,7 @@ class JobStreetSpider(scrapy.Spider):
         self.count = 0
         # https://www.jobstreet.vn/j?sp=search&q=intern&l=Ho+Chi+Minh
         self.start_urls = [
-            self.base_url + "/j?sp=" + self.search_query + "&l=" + self.location
+            self.base_url + "/j?q=" + self.search_query + "&l=" + self.location
         ]
         print("start_urls: ", self.start_urls)
 
